@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      body {
+        height: 95vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .main {
+        display: flex;
+      }
+      .drag_ {
+        width: 100px;
+        height: 100px;
+        display: flex;
+        color: #fff;
+        font-size: 20px;
+        font-weight: bold;
+        margin-right: 20px;
+        border-radius: 7px;
+        align-items: center;
+        justify-content: center;
+        background-color: bisque;
+        -webkit-user-drag: element;
+      }
+
+      #drag1,
+      .drag1 {
+        background-color: red !important;
+      }
+
+      #drag2,
+      .drag2 {
+        background-color: pink !important;
+      }
+
+      #drag3,
+      .drag3 {
+        background-color: #409eff !important;
+      }
+
+      .files {
+        width: 400px;
+        min-height: 300px;
+        border-radius: 5px;
+        background-color: rgba(62, 196, 253, 0.376);
+        margin-top: 100px;
+        transition: all 0.8s;
+      }
+
+      .fileshover {
+        transition: all 0.8s;
+        background-color: black;
+      }
+
+      .folder {
+        display: flex;
+        flex-wrap: wrap;
+        min-height: 300px;
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .item_box {
+        width: 50px;
+        height: 50px;
+        color: #fff;
+        display: flex;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 5px;
+        align-items: center;
+        background: #ffe4c4;
+        justify-content: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      <div class="main">
+        <div draggable="true" class="drag_">1</div>
+        <div draggable="true" id="drag1" class="drag_">2</div>
+        <div draggable="true" id="drag2" class="drag_">3</div>
+        <div draggable="true" id="drag3" class="drag_">4</div>
+      </div>
+      <div class="files">
+        <div class="folder"></div>
+      </div>
+    </div>
+
+    <script>
+      let data;
+      let className;
+      let index = null;
+      const draggable = document.querySelectorAll(".drag_");
+      const files = document.querySelector(".files");
+      const folder = document.querySelector(".folder");
+      
+      for (let i = 0; i < draggable.length; i++) {
+        draggable[i].addEventListener("dragstart", (event) => {
+          index = i;
+          data = event.target.innerText;
+          className = event.target.id;
+          event.dataTransfer.setData("name", data);
+        });
+      }
+      files.addEventListener("dragover", (event) => {
+        if (index == null) return;
+        event.target.classList.add("fileshover");
+        event.preventDefault();
+      });
+
+      files.addEventListener("dragleave", (event) => {
+        event.target.classList.remove("fileshover");
+      });
+
+      files.addEventListener("drop", (event) => {
+        if (index == null) return;
+        let div = document.createElement("div");
+        div.innerText = data;
+        div.className = `item_box ${className}`;
+        event.target.classList.remove("fileshover");
+        folder.appendChild(div);
+        let parent = document.querySelector(".main");
+        parent.removeChild(draggable[index]);
+        index = null;
+      });
+    </script>
+  </body>
+</html>
